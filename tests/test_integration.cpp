@@ -17,7 +17,6 @@ protected:
     void SetUp() override {
         std::filesystem::create_directory("logs");
 
-
         std::ofstream server_config_file("./server_config.json");
         server_config_file << R"({
             "udp_ip": "127.0.0.1",
@@ -41,13 +40,13 @@ protected:
         })";
         client_config_file.close();
 
-        if (!std::filesystem::exists("/home/golden/Desktop/mini-pgw/build/src/Server/server")) {
-            std::cerr << "Server executable not found at /home/golden/Desktop/mini-pgw/build/src/Server/server" << std::endl;
+        if (!std::filesystem::exists("../src/Server/server")) {
+            std::cerr << "Server executable not found at ../src/Server/server" << std::endl;
             FAIL();
         }
 
         server_thread = std::thread([this]() {
-            system("/home/golden/Desktop/mini-pgw/build/src/Server/server ./server_config.json");
+            system("../src/Server/server ./server_config.json");
         });
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -85,12 +84,12 @@ protected:
 };
 
 TEST_F(IntegrationTest, ClientServerInteraction) {
-    if (!std::filesystem::exists("/home/golden/Desktop/mini-pgw/build/src/Client/client")) {
-        std::cerr << "Client executable not found at /home/golden/Desktop/mini-pgw/build/src/Client/client" << std::endl;
+    if (!std::filesystem::exists("../src/Client/client")) {
+        std::cerr << "Client executable not found at ../src/Client/client" << std::endl;
         FAIL();
     }
 
-    int result = system("/home/golden/Desktop/mini-pgw/build/src/Client/client ./client_config.json 123456789012345");
+    int result = system("../src/Client/client ./client_config.json 123456789012345");
     ASSERT_EQ(result, 0);
 
     std::ifstream server_log("logs/server.log");
@@ -108,7 +107,7 @@ TEST_F(IntegrationTest, ClientServerInteraction) {
     std::ifstream cdr_file("logs/cdr.log");
     bool found_cdr = false;
     while (std::getline(cdr_file, line)) {
-        if (line.find("123456789012345, created") !=-std::string::npos) {
+        if (line.find("123456789012345, created") != std::string::npos) {
             found_cdr = true;
             break;
         }
@@ -118,12 +117,12 @@ TEST_F(IntegrationTest, ClientServerInteraction) {
 }
 
 TEST_F(IntegrationTest, BlacklistedIMSI) {
-    if (!std::filesystem::exists("/home/golden/Desktop/mini-pgw/build/src/Client/client")) {
-        std::cerr << "Client executable not found at /home/golden/Desktop/mini-pgw/build/src/Client/client" << std::endl;
+    if (!std::filesystem::exists("../src/Client/client")) {
+        std::cerr << "Client executable not found at ../src/Client/client" << std::endl;
         FAIL();
     }
 
-    int result = system("/home/golden/Desktop/mini-pgw/build/src/Client/client ./client_config.json 001010123456789");
+    int result = system("../src/Client/client ./client_config.json 001010123456789");
     ASSERT_EQ(result, 0);
 
     std::ifstream server_log("logs/server.log");
@@ -149,7 +148,6 @@ TEST_F(IntegrationTest, BlacklistedIMSI) {
     cdr_file.close();
     ASSERT_TRUE(found_cdr);
 }
-
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
