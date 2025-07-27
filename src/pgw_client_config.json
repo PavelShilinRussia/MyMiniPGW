@@ -1,0 +1,6 @@
+{
+  "server_ip": "127.0.0.1",
+  "server_port": 9000,
+  "log_file": "/home/golden/Desktop/mini-pgw/logs/client.log",
+  "log_level": "info"
+}
