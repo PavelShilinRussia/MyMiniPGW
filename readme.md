@@ -88,14 +88,14 @@ make
 
 ## Требования
 
-- C++17 или новее
+- C++17 или новее 
 - CMake
 - Linux
 - Используемые библиотеки:
   - `nlohmann::json`
   - `spdlog`
   - `httplib`
-  - `gtest` (для unit-тестов)
+  - `gtest` (для unit-тестирования)
 
 ---
 
